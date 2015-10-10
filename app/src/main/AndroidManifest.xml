@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".CreateConvRoot" />
+        <activity android:name=".PickAndCheckAnswers"/>
     </application>
 
 </manifest>

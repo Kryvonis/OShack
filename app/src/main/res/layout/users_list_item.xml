@@ -8,6 +8,9 @@
         android:layout_height="wrap_content"
         android:text="Name"
         android:textSize="30dp"
+        android:padding="3dp"
+        android:background="@drawable/card_background"
         android:id="@+id/user_name"
         android:layout_gravity="center_horizontal" />
+
 </LinearLayout>

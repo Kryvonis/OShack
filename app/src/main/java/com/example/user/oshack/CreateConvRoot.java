@@ -2,6 +2,7 @@ package com.example.user.oshack;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,10 @@ public class CreateConvRoot extends Activity {
     private static ArrayList<String> tasks = new ArrayList<>();
 
     private static ArrayList<User> users = new ArrayList<>();
+
+    public void startPickAndChekActivity() {
+        startActivity(new Intent(this, PickAndCheckAnswers.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +100,7 @@ public class CreateConvRoot extends Activity {
         private UsersListAdapter usersListAdapter;
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstacneState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             return inflater.inflate(R.layout.add_users_fragment, container, false);
         }
 
@@ -117,6 +122,14 @@ public class CreateConvRoot extends Activity {
             }
 
             usersListAdapter.notifyDataSetChanged();
+
+            startButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getActivity(), PickAndCheckAnswers.class));
+                }
+            });
 
         }
 

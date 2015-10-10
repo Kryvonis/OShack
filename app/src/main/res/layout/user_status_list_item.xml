@@ -7,7 +7,7 @@
         android:layout_height="wrap_content"
         android:text="Name"
         android:textSize="30dp"
-        android:id="@id/user_name"
+        android:id="@+id/user_name"
         android:paddingRight="100dp"
         />
 
