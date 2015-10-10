@@ -2,6 +2,7 @@ package com.example.user.oshack;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
@@ -22,7 +27,9 @@ public class CreateConvRoot extends Activity {
 
     private static ArrayList<String> tasks = new ArrayList<>();
 
-    private static ArrayList<User> users = new ArrayList<>();
+    private static ArrayList<User> users = new ArrayList<User>();
+
+    static final int PORT = 7777;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +101,9 @@ public class CreateConvRoot extends Activity {
 
         private UsersListAdapter usersListAdapter;
 
+        ReceiveUserTask recieverTask;
+
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstacneState) {
             return inflater.inflate(R.layout.add_users_fragment, container, false);
@@ -103,22 +113,73 @@ public class CreateConvRoot extends Activity {
         public void onViewCreated(final View view, Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
 
+
             usersList = (ListView) view.findViewById(R.id.list_user);
             startButton = (Button) view.findViewById(R.id.start_button);
+
 
 
             usersListAdapter = new UsersListAdapter(view.getContext(), R.layout.users_list_item, users);
             usersList.setAdapter(usersListAdapter);
 
-            try {
-                users.add(new User("Misha", InetAddress.getByName("127.0.0.1")));
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
 
-            usersListAdapter.notifyDataSetChanged();
+            recieverTask = new ReceiveUserTask();
+            recieverTask.execute();
+            startButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    recieverTask.cancel(true);
+                }
+            });
+
 
         }
 
+        class ReceiveUserTask extends AsyncTask<Void, String, Void> {
+
+            Socket client;
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    ServerSocket server = new ServerSocket(PORT);
+                    while(isCancelled()){
+                        client = server.accept();
+                        ObjectInputStream oin = new ObjectInputStream(client.getInputStream());
+                        User user = (User)oin.readObject();
+                        users.add(user);
+
+                        usersListAdapter.notifyDataSetChanged();
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+//            @Override
+//            protected void onProgressUpdate(String... values) {
+//                super.onProgressUpdate(values);
+//
+//            }
+            @Override
+            protected void onCancelled() {
+                super.onCancelled();
+                try {
+                    client.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
     }
+
+
+
 }

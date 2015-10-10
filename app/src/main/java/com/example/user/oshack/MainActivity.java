@@ -10,11 +10,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
 public class MainActivity extends Activity {
 
     private EditText nameField;
 
     private Button createNewConversation, connect;
+
+    static final int PORT = 7777;
+    static final String HOSTIP = "192.168.1.1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +31,26 @@ public class MainActivity extends Activity {
         nameField = (EditText) findViewById(R.id.name_field);
         createNewConversation = (Button) findViewById(R.id.create_button);
         connect = (Button) findViewById(R.id.connect_button);
+        connect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String userName = nameField.getText().toString();
+                if(userName.equals(""))return;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Socket socket = new Socket(HOSTIP, PORT);
+                            User user = new User(userName, socket.getLocalAddress());
+                            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
 
         createNewConversation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,26 +60,5 @@ public class MainActivity extends Activity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }
