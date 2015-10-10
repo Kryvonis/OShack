@@ -6,7 +6,7 @@
         android:foregroundGravity="top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/list_users"
+        android:id="@+id/list_user"
         android:layout_marginBottom="100dp">
     </ListView>
 </RelativeLayout>
