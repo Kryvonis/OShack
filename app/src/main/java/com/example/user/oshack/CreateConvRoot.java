@@ -18,6 +18,8 @@ import java.util.ArrayList;
  */
 public class CreateConvRoot extends Activity {
 
+    private static ArrayList<String> tasks = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,11 +35,10 @@ public class CreateConvRoot extends Activity {
     public static class AddTasksFragment extends Fragment {
 
         private ListView listView;
-        private Button addButton;
+        private Button addButton, nextButton;
         private EditText addTaskEditor;
 
         private ArrayAdapter<String> adapter;
-        private ArrayList<String> tasks = new ArrayList<>();
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstacneState) {
@@ -51,9 +52,9 @@ public class CreateConvRoot extends Activity {
             listView = (ListView) view.findViewById(R.id.list_view);
             addButton = (Button) view.findViewById(R.id.add_button);
             addTaskEditor = (EditText) view.findViewById(R.id.new_task);
+            nextButton = (Button) view.findViewById(R.id.next_button);
 
             adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, tasks);
-
             listView.setAdapter(adapter);
 
             addButton.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +68,31 @@ public class CreateConvRoot extends Activity {
                     adapter.notifyDataSetChanged();
                 }
             });
+
+            nextButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    getFragmentManager().beginTransaction()
+                            .add(R.id.container, new AddUsersFragment())
+                            .commit();
+                }
+            });
+        }
+
+    }
+
+    public static class AddUsersFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstacneState) {
+            return inflater.inflate(R.layout.add_tasks_fragment, container, false);
+        }
+
+        @Override
+        public void onViewCreated(final View view, Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+
         }
 
     }
