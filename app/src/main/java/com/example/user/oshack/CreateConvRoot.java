@@ -2,8 +2,10 @@ package com.example.user.oshack;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.os.AsyncTask;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +13,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
@@ -23,11 +31,13 @@ public class CreateConvRoot extends Activity {
 
     private static ArrayList<String> tasks = new ArrayList<>();
 
-    private static ArrayList<User> users = new ArrayList<>();
+    private static ArrayList<User> users = new ArrayList();
 
     public void startPickAndChekActivity() {
         startActivity(new Intent(this, PickAndCheckAnswers.class));
     }
+
+    static final int PORT = 7777;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +97,7 @@ public class CreateConvRoot extends Activity {
                             .commit();
                 }
             });
+            
         }
 
     }
@@ -98,6 +109,9 @@ public class CreateConvRoot extends Activity {
         private Button startButton;
 
         private UsersListAdapter usersListAdapter;
+
+        ReceiveUserTask recieverTask;
+
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -115,21 +129,68 @@ public class CreateConvRoot extends Activity {
             usersListAdapter = new UsersListAdapter(view.getContext(), R.layout.users_list_item, users);
             usersList.setAdapter(usersListAdapter);
 
-            try {
-                users.add(new User("Misha", InetAddress.getByName("127.0.0.1")));
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
 
-            usersListAdapter.notifyDataSetChanged();
-
+            recieverTask = new ReceiveUserTask();
+            recieverTask.execute();
             startButton.setOnClickListener(new View.OnClickListener() {
-
                 @Override
                 public void onClick(View v) {
+                    recieverTask.cancel(true);
                     startActivity(new Intent(getActivity(), PickAndCheckAnswers.class));
                 }
             });
+
+
+        }
+
+
+        class ReceiveUserTask extends AsyncTask<Void, Void, Void> {
+
+            Socket client;
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    ServerSocket server = new ServerSocket(PORT);
+                   // Toast.makeText(getContext(), "Task Start", Toast.LENGTH_SHORT).show();
+                    while(true){
+                        Log.d("user","Start");
+                        //Toast.makeText(getContext(), "Cicle Start", Toast.LENGTH_SHORT).show();
+                        client = server.accept();
+                       // Toast.makeText(getContext(),"New User Accept", Toast.LENGTH_SHORT).show();
+                        ObjectInputStream oin = new ObjectInputStream(client.getInputStream());
+                        User user = (User)oin.readObject();
+
+                        users.add(user);
+                        publishProgress();
+                        Log.d("user", "Added");
+                        //Toast.makeText(getContext(), user.getName(), Toast.LENGTH_SHORT).show();
+
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }catch (ClassNotFoundException e) {
+                    Log.d("user","Error");
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Void... values) {
+                super.onProgressUpdate(values);
+                usersListAdapter.notifyDataSetChanged();
+            }
+            @Override
+            protected void onCancelled() {
+                super.onCancelled();
+                try {
+                    client.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
         }
 
