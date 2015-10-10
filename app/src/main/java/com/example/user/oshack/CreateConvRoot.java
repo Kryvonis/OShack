@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 /**
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 public class CreateConvRoot extends Activity {
 
     private static ArrayList<String> tasks = new ArrayList<>();
+
+    private static ArrayList<User> users = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +78,7 @@ public class CreateConvRoot extends Activity {
                 @Override
                 public void onClick(View v) {
                     getFragmentManager().beginTransaction()
-                            .add(R.id.container, new AddUsersFragment())
+                            .replace(R.id.container, new AddUsersFragment())
                             .commit();
                 }
             });
@@ -84,14 +88,35 @@ public class CreateConvRoot extends Activity {
 
     public static class AddUsersFragment extends Fragment {
 
+        private ListView usersList;
+
+        private Button startButton;
+
+        private UsersListAdapter usersListAdapter;
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstacneState) {
-            return inflater.inflate(R.layout.add_tasks_fragment, container, false);
+            return inflater.inflate(R.layout.add_users_fragment, container, false);
         }
 
         @Override
         public void onViewCreated(final View view, Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
+
+            usersList = (ListView) view.findViewById(R.id.list_user);
+            startButton = (Button) view.findViewById(R.id.start_button);
+
+
+            usersListAdapter = new UsersListAdapter(view.getContext(), R.layout.users_list_item, users);
+            usersList.setAdapter(usersListAdapter);
+
+            try {
+                users.add(new User("Misha", InetAddress.getByName("127.0.0.1")));
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+
+            usersListAdapter.notifyDataSetChanged();
 
         }
 
