@@ -15,6 +15,7 @@ public class User implements Serializable {
     private boolean isReady;
     private int time;
 
+
     public User(String name, InetAddress ip){
         this.name = name;
         this.ip = ip;
