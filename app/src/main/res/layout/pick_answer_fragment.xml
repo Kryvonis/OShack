@@ -8,15 +8,14 @@
         android:text="Question"
         android:textSize="30dp"
         android:id="@+id/question_text"/>
-    <GridLayout
+    <GridView
         android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/answers_grid"
         >
 
-    </GridLayout>
-
+    </GridView>
 
 
 </RelativeLayout>
