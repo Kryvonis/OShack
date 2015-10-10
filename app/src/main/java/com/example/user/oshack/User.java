@@ -3,9 +3,6 @@ package com.example.user.oshack;
 import java.io.Serializable;
 import java.net.InetAddress;
 
-/**
- * Created by dmytro on 10.10.15.
- */
 public class User implements Serializable {
     private static int count = 0;
     private final int id = ++count;
@@ -14,7 +11,6 @@ public class User implements Serializable {
     private InetAddress ip;
     private boolean isReady;
     private int time;
-
 
     public User(String name, InetAddress ip){
         this.name = name;
