@@ -2,6 +2,7 @@ package com.example.user.oshack;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,9 +11,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class MainActivity extends Activity {
 
@@ -36,19 +44,34 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 final String userName = nameField.getText().toString();
                 if(userName.equals(""))return;
-                new Thread(new Runnable() {
+                Thread t =  new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        Socket socket = null;
+                        ObjectOutputStream oos = null;
                         try {
-                            Socket socket = new Socket(HOSTIP, PORT);
+                            socket = new Socket(HOSTIP, PORT);
+                            oos = new ObjectOutputStream(socket.getOutputStream());
                             User user = new User(userName, socket.getLocalAddress());
-                            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
+                            oos.writeObject(user);
+
+                            oos.flush();
                         } catch (IOException e) {
                             e.printStackTrace();
+                        }finally {
+                            try {
+                                oos.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
+
+
                     }
                 });
+                t.start();
+                Toast.makeText(getBaseContext(), "User sended", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -59,6 +82,7 @@ public class MainActivity extends Activity {
             }
         });
     }
+
 
 
 }

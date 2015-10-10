@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -27,7 +30,7 @@ public class CreateConvRoot extends Activity {
 
     private static ArrayList<String> tasks = new ArrayList<>();
 
-    private static ArrayList<User> users = new ArrayList<User>();
+    private static ArrayList<User> users = new ArrayList();
 
     static final int PORT = 7777;
 
@@ -135,7 +138,8 @@ public class CreateConvRoot extends Activity {
 
         }
 
-        class ReceiveUserTask extends AsyncTask<Void, String, Void> {
+
+        class ReceiveUserTask extends AsyncTask<Void, Void, Void> {
 
             Socket client;
 
@@ -143,29 +147,37 @@ public class CreateConvRoot extends Activity {
             protected Void doInBackground(Void... params) {
                 try {
                     ServerSocket server = new ServerSocket(PORT);
-                    while(isCancelled()){
+                   // Toast.makeText(getContext(), "Task Start", Toast.LENGTH_SHORT).show();
+                    while(true){
+                        Log.d("user","Start");
+                        //Toast.makeText(getContext(), "Cicle Start", Toast.LENGTH_SHORT).show();
                         client = server.accept();
+                       // Toast.makeText(getContext(),"New User Accept", Toast.LENGTH_SHORT).show();
                         ObjectInputStream oin = new ObjectInputStream(client.getInputStream());
                         User user = (User)oin.readObject();
-                        users.add(user);
 
-                        usersListAdapter.notifyDataSetChanged();
+                        users.add(user);
+                        publishProgress();
+                        Log.d("user", "Added");
+                        //Toast.makeText(getContext(), user.getName(), Toast.LENGTH_SHORT).show();
+
                     }
 
                 } catch (IOException e) {
                     e.printStackTrace();
-                } catch (ClassNotFoundException e) {
+                }catch (ClassNotFoundException e) {
+                    Log.d("user","Error");
                     e.printStackTrace();
                 }
 
                 return null;
             }
 
-//            @Override
-//            protected void onProgressUpdate(String... values) {
-//                super.onProgressUpdate(values);
-//
-//            }
+            @Override
+            protected void onProgressUpdate(Void... values) {
+                super.onProgressUpdate(values);
+                usersListAdapter.notifyDataSetChanged();
+            }
             @Override
             protected void onCancelled() {
                 super.onCancelled();
