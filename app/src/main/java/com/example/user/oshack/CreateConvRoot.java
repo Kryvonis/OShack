@@ -97,7 +97,7 @@ public class CreateConvRoot extends Activity {
                             .commit();
                 }
             });
-            
+
         }
 
     }
@@ -152,14 +152,14 @@ public class CreateConvRoot extends Activity {
             protected Void doInBackground(Void... params) {
                 try {
                     ServerSocket server = new ServerSocket(PORT);
-                   // Toast.makeText(getContext(), "Task Start", Toast.LENGTH_SHORT).show();
-                    while(true){
-                        Log.d("user","Start");
+                    // Toast.makeText(getContext(), "Task Start", Toast.LENGTH_SHORT).show();
+                    while (true) {
+                        Log.d("user", "Start");
                         //Toast.makeText(getContext(), "Cicle Start", Toast.LENGTH_SHORT).show();
                         client = server.accept();
-                       // Toast.makeText(getContext(),"New User Accept", Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(getContext(),"New User Accept", Toast.LENGTH_SHORT).show();
                         ObjectInputStream oin = new ObjectInputStream(client.getInputStream());
-                        User user = (User)oin.readObject();
+                        User user = (User) oin.readObject();
 
                         users.add(user);
                         publishProgress();
@@ -170,8 +170,8 @@ public class CreateConvRoot extends Activity {
 
                 } catch (IOException e) {
                     e.printStackTrace();
-                }catch (ClassNotFoundException e) {
-                    Log.d("user","Error");
+                } catch (ClassNotFoundException e) {
+                    Log.d("user", "Error");
                     e.printStackTrace();
                 }
 
@@ -183,6 +183,7 @@ public class CreateConvRoot extends Activity {
                 super.onProgressUpdate(values);
                 usersListAdapter.notifyDataSetChanged();
             }
+
             @Override
             protected void onCancelled() {
                 super.onCancelled();
@@ -192,7 +193,8 @@ public class CreateConvRoot extends Activity {
                     e.printStackTrace();
                 }
 
-        }
+            }
 
+        }
     }
 }
