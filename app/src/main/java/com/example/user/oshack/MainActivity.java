@@ -1,16 +1,36 @@
 package com.example.user.oshack;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
+
+    private EditText nameField;
+
+    private Button createNewConversation, connect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        nameField = (EditText) findViewById(R.id.name_field);
+        createNewConversation = (Button) findViewById(R.id.create_button);
+        connect = (Button) findViewById(R.id.connect_button);
+
+        createNewConversation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CreateConvRoot.class));
+            }
+        });
     }
 
     @Override
