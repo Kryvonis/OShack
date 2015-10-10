@@ -18,6 +18,7 @@ public class User implements Serializable {
         this.ip = ip;
     }
 
+
     public String getName(){return name;}
     public InetAddress getIp(){return ip;}
     public boolean isReady(){return isReady;}
