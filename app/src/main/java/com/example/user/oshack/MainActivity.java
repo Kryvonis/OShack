@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
         createNewConversation = (Button) findViewById(R.id.create_button);
         connect = (Button) findViewById(R.id.connect_button);
 
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(IS_ROOT, MODE_PRIVATE);
         ed = sharedPreferences.edit();
 
         connect.setOnClickListener(new View.OnClickListener() {
