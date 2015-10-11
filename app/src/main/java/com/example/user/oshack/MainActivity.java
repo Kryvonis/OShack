@@ -82,7 +82,7 @@ public class MainActivity extends Activity {
                     }
                 });
                 t.start();
-                Toast.makeText(getBaseContext(), "User sended", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, PickAndCheckAnswers.class));
             }
         });
 

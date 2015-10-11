@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class PickAndCheckAnswers extends Activity {
         if (savedInstanceState == null) {
             if (!isRoot) {
                 getFragmentManager().beginTransaction()
-                        .add(R.id.pick_and_check_answers_container, new PickAnswerFragment())
+                        .add(R.id.pick_and_check_answers_container, new LoadingFragment())
                         .commit();
             } else {
                 getFragmentManager().beginTransaction()
@@ -47,6 +48,23 @@ public class PickAndCheckAnswers extends Activity {
                         .commit();
             }
         }
+    }
+
+    public static class LoadingFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.spiner_fragment, container, false);
+        }
+
+        @Override
+        public void onViewCreated(final View view, Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+
+            ((ProgressBar) view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+            ((ProgressBar) view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        }
+
     }
 
     public static class PickAnswerFragment extends Fragment {
