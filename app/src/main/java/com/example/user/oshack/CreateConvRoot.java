@@ -140,11 +140,6 @@ public class CreateConvRoot extends Activity {
             startButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try {
-                        server.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                     Thread t = new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -158,18 +153,22 @@ public class CreateConvRoot extends Activity {
                                     oos.flush();
                                 }
                                 for(User usr: users){
-                                    List<User> tmp = new ArrayList<User>(users);
-                                    tmp.remove(usr);
                                     socket = new Socket(usr.getIp(), PORT);
                                     oos = new ObjectOutputStream(socket.getOutputStream());
-                                    oos.writeObject(tmp);
-                                    oos.flush();
+                                    oos.writeObject(users);
                                     oos.writeObject(usr);//currentUser
                                     oos.flush();
                                 }
 
                             } catch (IOException e) {
                                 e.printStackTrace();
+                            }finally{
+                                try {
+                                    socket.close();
+                                    server.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
 
@@ -177,7 +176,7 @@ public class CreateConvRoot extends Activity {
                     t.start();
                     Intent intent  = new Intent(getActivity(), PickAndCheckAnswers.class);
                     intent.putExtra("tasks", tasks);//save as Object
-                    intent.putExtra("users", users);
+                    intent.putExtra("users", (Serializable)users);
                     startActivity(intent);
                 }
             });

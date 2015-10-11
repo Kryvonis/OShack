@@ -22,7 +22,7 @@ public class User implements Serializable {
     public InetAddress getIp(){return ip;}
     public boolean isReady(){return isReady;}
     public int getTime(){return time;}
-
+    public int getId(){return id;}
 
     public void setReady(boolean ready){isReady = ready;}
     public void setTime(int time){this.time = time;}
