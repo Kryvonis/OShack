@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,24 +23,31 @@ import java.util.zip.Inflater;
  */
 public class PickAndCheckAnswers extends Activity {
 
-    private ArrayList<User> users = new ArrayList<>();
+    private static ArrayList<User> users;
 
     public static final String IS_ROOT = "is_root";
 
     private boolean isRoot;
+
+    public static boolean isAllReady() {
+        for (User user : users) {
+            if (!user.isReady()) return false;
+        }
+        return true;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pick_and_check_answers_main);
 
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(IS_ROOT, MODE_PRIVATE);
         isRoot = sharedPreferences.getBoolean(IS_ROOT, false);
 
         if (savedInstanceState == null) {
             if (!isRoot) {
                 getFragmentManager().beginTransaction()
-                        .add(R.id.pick_and_check_answers_container, new PickAnswerFragment())
+                        .add(R.id.pick_and_check_answers_container, new LoadingFragment())
                         .commit();
             } else {
                 getFragmentManager().beginTransaction()
@@ -47,6 +55,23 @@ public class PickAndCheckAnswers extends Activity {
                         .commit();
             }
         }
+    }
+
+    public static class LoadingFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.spiner_fragment, container, false);
+        }
+
+        @Override
+        public void onViewCreated(final View view, Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+
+            ((ProgressBar) view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+            ((ProgressBar) view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        }
+
     }
 
     public static class PickAnswerFragment extends Fragment {
@@ -77,6 +102,7 @@ public class PickAndCheckAnswers extends Activity {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
 
                     /**
                      * Here we have to set answer to user
@@ -112,6 +138,7 @@ public class PickAndCheckAnswers extends Activity {
 
             usersAndStatusList = (ListView) view.findViewById(R.id.users_status_list);
             nextQuestionButton = (Button) view.findViewById(R.id.next_question_button);
+
 
 
         }
