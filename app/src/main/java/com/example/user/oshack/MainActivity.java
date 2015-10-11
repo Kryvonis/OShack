@@ -2,6 +2,7 @@ package com.example.user.oshack;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -28,6 +29,10 @@ public class MainActivity extends Activity {
 
     private Button createNewConversation, connect;
 
+    public static final String IS_ROOT = "is_root";
+
+    private SharedPreferences.Editor ed;
+
     static final int PORT = 7777;
     static final String HOSTIP = "192.168.1.1";
 
@@ -39,9 +44,15 @@ public class MainActivity extends Activity {
         nameField = (EditText) findViewById(R.id.name_field);
         createNewConversation = (Button) findViewById(R.id.create_button);
         connect = (Button) findViewById(R.id.connect_button);
+
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        ed = sharedPreferences.edit();
+
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ed.putBoolean(IS_ROOT, false);
+                ed.commit();
                 final String userName = nameField.getText().toString();
                 if(userName.equals(""))return;
                 Thread t =  new Thread(new Runnable() {
@@ -78,6 +89,8 @@ public class MainActivity extends Activity {
         createNewConversation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ed.putBoolean(IS_ROOT, true);
+                ed.commit();
                 startActivity(new Intent(MainActivity.this, CreateConvRoot.class));
             }
         });
