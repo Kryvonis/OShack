@@ -25,10 +25,6 @@ public class CreateConvRoot extends Activity {
 
     private static ArrayList<User> users = new ArrayList<>();
 
-    public void startPickAndChekActivity() {
-        startActivity(new Intent(this, PickAndCheckAnswers.class));
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +59,7 @@ public class CreateConvRoot extends Activity {
             addTaskEditor = (EditText) view.findViewById(R.id.new_task);
             nextButton = (Button) view.findViewById(R.id.next_button);
 
-            adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, tasks);
+            adapter = new TasksAdapter(view.getContext(), R.layout.task_item, tasks);
             listView.setAdapter(adapter);
 
             addButton.setOnClickListener(new View.OnClickListener() {
