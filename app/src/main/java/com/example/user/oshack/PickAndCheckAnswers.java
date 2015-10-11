@@ -23,18 +23,25 @@ import java.util.zip.Inflater;
  */
 public class PickAndCheckAnswers extends Activity {
 
-    private ArrayList<User> users = new ArrayList<>();
+    private static ArrayList<User> users;
 
     public static final String IS_ROOT = "is_root";
 
     private boolean isRoot;
+
+    public static boolean isAllReady() {
+        for (User user : users) {
+            if (!user.isReady()) return false;
+        }
+        return true;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pick_and_check_answers_main);
 
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(IS_ROOT, MODE_PRIVATE);
         isRoot = sharedPreferences.getBoolean(IS_ROOT, false);
 
         if (savedInstanceState == null) {
@@ -95,6 +102,7 @@ public class PickAndCheckAnswers extends Activity {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
 
                     /**
                      * Here we have to set answer to user
