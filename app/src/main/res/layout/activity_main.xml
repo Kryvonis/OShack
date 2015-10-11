@@ -34,6 +34,7 @@
 
         <ImageView
             android:layout_width="50dp"
+            android:padding="3dp"
             android:layout_height="50dp"
             android:src="@drawable/right_image"/>
 
@@ -49,6 +50,7 @@
 
         <ImageView
             android:layout_width="50dp"
+            android:padding="3dp"
             android:layout_height="50dp"
             android:src="@drawable/next_image"/>
 

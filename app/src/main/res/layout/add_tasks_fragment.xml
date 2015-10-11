@@ -17,9 +17,10 @@
     </ListView>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="add"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:padding="3dp"
+        android:background="@drawable/add_image"
         android:id="@+id/add_button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
@@ -36,9 +37,10 @@
         android:layout_toStartOf="@+id/add_button" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="next"
+        android:padding="3dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/right_image"
         android:id="@+id/next_button"
         android:layout_above="@+id/add_button"
         android:layout_alignParentRight="true"
