@@ -33,6 +33,10 @@ public class GridAnswerAdapter extends ArrayAdapter<String> {
         return items.length;
     }
 
+    public String getElement(int position) {
+        return items[position];
+    }
+
     @Override
     public View getView(int position, View convertedView, ViewGroup parent) {
 

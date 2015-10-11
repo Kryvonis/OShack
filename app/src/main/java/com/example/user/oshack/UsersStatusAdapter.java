@@ -57,7 +57,7 @@ public class UsersStatusAdapter extends ArrayAdapter<User> {
 
             if (isAllReady) {
                 status.setBackgroundResource(android.R.color.transparent);
-                status.setText(item.getTime());
+                status.setText(String.valueOf(item.getTime()));
             } else if (item.isReady()) {
                 status.setBackgroundResource(R.drawable.answer_ready);
             } else {
