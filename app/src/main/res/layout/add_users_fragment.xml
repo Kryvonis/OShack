@@ -7,7 +7,7 @@
         android:foregroundGravity="top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
+        android:padding="1dp"
         android:id="@+id/list_user"
         android:layout_marginBottom="100dp"
         android:divider="@android:color/transparent"

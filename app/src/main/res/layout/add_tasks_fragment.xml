@@ -6,7 +6,7 @@
 
     <ListView
         android:foregroundGravity="top"
-        android:padding="5dp"
+        android:padding="1dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/list_view"
