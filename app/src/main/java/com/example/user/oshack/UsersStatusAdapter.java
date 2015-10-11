@@ -18,6 +18,8 @@ public class UsersStatusAdapter extends ArrayAdapter<User> {
 
     private int resource;
 
+    private boolean isAllReady = false;
+
     private ArrayList<User> items;
 
     public UsersStatusAdapter(Context context, int resource, ArrayList<User> items) {
@@ -26,6 +28,10 @@ public class UsersStatusAdapter extends ArrayAdapter<User> {
         this.context = context;
         this.resource = resource;
         this.items = items;
+    }
+
+    public void setAllReady() {
+        isAllReady = true;
     }
 
     @Override
@@ -49,7 +55,10 @@ public class UsersStatusAdapter extends ArrayAdapter<User> {
             ((TextView) view.findViewById(R.id.user_name)).setText(item.getName());
             TextView status = (TextView) view.findViewById(R.id.answer_status);
 
-            if(item.isReady()) {
+            if (isAllReady) {
+                status.setBackgroundResource(android.R.color.transparent);
+                status.setText(item.getTime());
+            } else if (item.isReady()) {
                 status.setBackgroundResource(R.drawable.answer_ready);
             } else {
                 status.setBackgroundResource(R.drawable.answer_not_ready);
