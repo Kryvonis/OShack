@@ -57,7 +57,7 @@ public class PickAndCheckAnswers extends Activity {
             questionText = (TextView) view.findViewById(R.id.question_text);
             answersGrid = (GridView) view.findViewById(R.id.answers_grid);
 
-            adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, answers);
+            adapter = new GridAnswerAdapter(view.getContext(), R.layout.answer_item, answers);
             answersGrid.setAdapter(adapter);
             answersGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

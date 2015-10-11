@@ -12,15 +12,15 @@ import java.util.ArrayList;
 /**
  * Created by dnt on 10/11/15.
  */
-public class UsersStatusAdapter extends ArrayAdapter<User> {
+public class GridAnswerAdapter extends ArrayAdapter<String> {
 
     private Context context;
 
     private int resource;
 
-    private ArrayList<User> items;
+    private String[] items;
 
-    public UsersStatusAdapter(Context context, int resource, ArrayList<User> items) {
+    public GridAnswerAdapter(Context context, int resource, String[] items) {
         super(context, resource, items);
 
         this.context = context;
@@ -30,7 +30,7 @@ public class UsersStatusAdapter extends ArrayAdapter<User> {
 
     @Override
     public int getCount() {
-        return items.size();
+        return items.length;
     }
 
     @Override
@@ -38,23 +38,15 @@ public class UsersStatusAdapter extends ArrayAdapter<User> {
 
         View view = convertedView;
 
-        if(view == null) {
+        if (view == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-            view = layoutInflater.inflate(R.layout.user_status_list_item, null);
+            view = layoutInflater.inflate(R.layout.answer_item, null);
         }
 
-        User item = getItem(position);
+        String item = getItem(position);
 
-        if(item != null) {
-            ((TextView) view.findViewById(R.id.user_name)).setText(item.getName());
-            TextView status = (TextView) view.findViewById(R.id.answer_status);
-
-            if(item.isReady()) {
-                status.setBackgroundResource(R.drawable.answer_ready);
-            } else {
-                status.setBackgroundResource(R.drawable.answer_not_ready);
-            }
-
+        if (item != null) {
+            ((TextView) view.findViewById(R.id.answer_text)).setText(item);
         }
 
         return view;
