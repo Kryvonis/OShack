@@ -2,6 +2,7 @@ package com.example.user.oshack;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,15 +24,28 @@ public class PickAndCheckAnswers extends Activity {
 
     private ArrayList<User> users = new ArrayList<>();
 
+    public static final String IS_ROOT = "is_root";
+
+    private boolean isRoot;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pick_and_check_answers_main);
 
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        isRoot = sharedPreferences.getBoolean(IS_ROOT, false);
+
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.pick_and_check_answers_container, new PickAnswerFragment())
-                    .commit();
+            if (!isRoot) {
+                getFragmentManager().beginTransaction()
+                        .add(R.id.pick_and_check_answers_container, new PickAnswerFragment())
+                        .commit();
+            } else {
+                getFragmentManager().beginTransaction()
+                        .add(R.id.pick_and_check_answers_container, new CheckAnswersFragment())
+                        .commit();
+            }
         }
     }
 
@@ -57,7 +71,7 @@ public class PickAndCheckAnswers extends Activity {
             questionText = (TextView) view.findViewById(R.id.question_text);
             answersGrid = (GridView) view.findViewById(R.id.answers_grid);
 
-            adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, answers);
+            adapter = new GridAnswerAdapter(view.getContext(), R.layout.answer_item, answers);
             answersGrid.setAdapter(adapter);
             answersGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

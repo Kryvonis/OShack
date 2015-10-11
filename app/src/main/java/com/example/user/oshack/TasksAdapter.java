@@ -12,15 +12,15 @@ import java.util.ArrayList;
 /**
  * Created by dnt on 10/11/15.
  */
-public class UsersStatusAdapter extends ArrayAdapter<User> {
+public class TasksAdapter extends ArrayAdapter<String> {
 
     private Context context;
 
     private int resource;
 
-    private ArrayList<User> items;
+    private ArrayList<String> items;
 
-    public UsersStatusAdapter(Context context, int resource, ArrayList<User> items) {
+    public TasksAdapter(Context context, int resource, ArrayList<String> items) {
         super(context, resource, items);
 
         this.context = context;
@@ -40,24 +40,17 @@ public class UsersStatusAdapter extends ArrayAdapter<User> {
 
         if(view == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-            view = layoutInflater.inflate(R.layout.user_status_list_item, null);
+            view = layoutInflater.inflate(R.layout.task_item, null);
         }
 
-        User item = getItem(position);
+        String item = getItem(position);
 
         if(item != null) {
-            ((TextView) view.findViewById(R.id.user_name)).setText(item.getName());
-            TextView status = (TextView) view.findViewById(R.id.answer_status);
-
-            if(item.isReady()) {
-                status.setBackgroundResource(R.drawable.answer_ready);
-            } else {
-                status.setBackgroundResource(R.drawable.answer_not_ready);
-            }
-
+            ((TextView) view.findViewById(R.id.task_text)).setText(item);
         }
 
         return view;
+
     }
 
 }
