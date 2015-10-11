@@ -87,7 +87,6 @@ public class CreateConvRoot extends Activity {
                     adapter.notifyDataSetChanged();
                 }
             });
-
             nextButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
