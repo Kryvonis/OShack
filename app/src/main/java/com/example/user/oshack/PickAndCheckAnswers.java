@@ -140,6 +140,7 @@ public class PickAndCheckAnswers extends Activity {
             nextQuestionButton = (Button) view.findViewById(R.id.next_question_button);
 
 
+
         }
 
     }
