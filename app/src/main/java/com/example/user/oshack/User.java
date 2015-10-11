@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.net.InetAddress;
 
 public class User implements Serializable {
-    private static int count = 0;
-    private final int id = ++count;
+    private  int id = 0;
 
     private String name;
     private InetAddress ip;
@@ -27,4 +26,5 @@ public class User implements Serializable {
 
     public void setReady(boolean ready){isReady = ready;}
     public void setTime(int time){this.time = time;}
+    public void setId(int id){this.id = id;}
 }

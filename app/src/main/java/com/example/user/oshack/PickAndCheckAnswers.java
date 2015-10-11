@@ -3,6 +3,7 @@ package com.example.user.oshack;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.zip.Inflater;
 
@@ -23,7 +28,12 @@ import java.util.zip.Inflater;
  */
 public class PickAndCheckAnswers extends Activity {
 
-    private static ArrayList<User> users;
+    static private ArrayList<User> users = new ArrayList<>();
+    static private ArrayList<String> tasks = new ArrayList<>();
+    static private User currentUser = null;
+
+    static final int PORT = 7777;
+    static final String HOSTIP = "192.168.1.1";
 
     public static final String IS_ROOT = "is_root";
 
@@ -70,6 +80,49 @@ public class PickAndCheckAnswers extends Activity {
 
             ((ProgressBar) view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
             ((ProgressBar) view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+            ReceiverTask task = new ReceiverTask();
+            task.execute();
+        }
+        class ReceiverTask extends AsyncTask<Void, Void, Void>{
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                ServerSocket server = null;
+                Socket socket = null;
+                try {
+                    server = new ServerSocket(PORT);
+                    socket = server.accept();
+                    ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                    tasks = (ArrayList<String>)ois.readObject();
+                    socket = server.accept();
+                    ois = new ObjectInputStream(socket.getInputStream());
+                    users = (ArrayList<User>)ois.readObject();
+                    currentUser = (User)ois.readObject();
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }finally {
+                    try {
+                        socket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                publishProgress();
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Void... values) {
+                super.onProgressUpdate(values);
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.pick_and_check_answers_container, new PickAnswerFragment())
+                        .commit();
+            }
         }
 
     }
@@ -94,6 +147,7 @@ public class PickAndCheckAnswers extends Activity {
             super.onViewCreated(view, savedInstanceState);
 
             questionText = (TextView) view.findViewById(R.id.question_text);
+            questionText.setText(tasks.remove(0));
             answersGrid = (GridView) view.findViewById(R.id.answers_grid);
 
             adapter = new GridAnswerAdapter(view.getContext(), R.layout.answer_item, answers);
@@ -102,7 +156,6 @@ public class PickAndCheckAnswers extends Activity {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
 
                     /**
                      * Here we have to set answer to user
@@ -138,7 +191,6 @@ public class PickAndCheckAnswers extends Activity {
 
             usersAndStatusList = (ListView) view.findViewById(R.id.users_status_list);
             nextQuestionButton = (Button) view.findViewById(R.id.next_question_button);
-
 
 
         }

@@ -164,6 +164,8 @@ public class CreateConvRoot extends Activity {
                                     oos = new ObjectOutputStream(socket.getOutputStream());
                                     oos.writeObject(tmp);
                                     oos.flush();
+                                    oos.writeObject(usr);//currentUser
+                                    oos.flush();
                                 }
 
                             } catch (IOException e) {
@@ -192,7 +194,7 @@ public class CreateConvRoot extends Activity {
             protected Void doInBackground(Void... params) {
                 try {
                     server = new ServerSocket(PORT);
-
+                    int idcount=0;
                     while (true) {
                         Log.d("user", "Start");
                         try {
@@ -202,6 +204,7 @@ public class CreateConvRoot extends Activity {
                         }
                         ObjectInputStream oin = new ObjectInputStream(client.getInputStream());
                         User user = (User) oin.readObject();
+                        user.setId(idcount++);
 
                         users.add(user);
                         publishProgress();
