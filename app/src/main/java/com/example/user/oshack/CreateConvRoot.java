@@ -17,17 +17,23 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
 import java.io.Serializable;
+import java.io.StreamCorruptedException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by user on 10/10/15.
  */
 public class CreateConvRoot extends Activity {
+    static final int PORT = 7777;
+    static final String HOSTIP = "192.168.1.1";
 
     private static ArrayList<String> tasks = new ArrayList<>();
 
@@ -37,7 +43,7 @@ public class CreateConvRoot extends Activity {
         startActivity(new Intent(this, PickAndCheckAnswers.class));
     }
 
-    static final int PORT = 7777;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +118,7 @@ public class CreateConvRoot extends Activity {
 
         ReceiveUserTask recieverTask;
 
-
+        ServerSocket server;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             return inflater.inflate(R.layout.add_users_fragment, container, false);
@@ -135,8 +141,43 @@ public class CreateConvRoot extends Activity {
             startButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    recieverTask.cancel(true);
-                    startActivity(new Intent(getActivity(), PickAndCheckAnswers.class));
+                    try {
+                        server.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Thread t = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Socket socket = null;
+                            ObjectOutputStream oos = null;
+                            try {
+                                for(User usr:users) {
+                                    socket = new Socket(usr.getIp(), PORT);
+                                    oos = new ObjectOutputStream(socket.getOutputStream());
+                                    oos.writeObject(tasks);
+                                    oos.flush();
+                                }
+                                for(User usr: users){
+                                    List<User> tmp = new ArrayList<User>(users);
+                                    tmp.remove(usr);
+                                    socket = new Socket(usr.getIp(), PORT);
+                                    oos = new ObjectOutputStream(socket.getOutputStream());
+                                    oos.writeObject(tmp);
+                                    oos.flush();
+                                }
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    });
+                    t.start();
+                    Intent intent  = new Intent(getActivity(), PickAndCheckAnswers.class);
+                    intent.putExtra("tasks", tasks);//save as Object
+                    intent.putExtra("users", users);
+                    startActivity(intent);
                 }
             });
 
@@ -146,35 +187,42 @@ public class CreateConvRoot extends Activity {
 
         class ReceiveUserTask extends AsyncTask<Void, Void, Void> {
 
-            Socket client;
+            Socket client = null;
 
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    ServerSocket server = new ServerSocket(PORT);
-                    // Toast.makeText(getContext(), "Task Start", Toast.LENGTH_SHORT).show();
+                    server = new ServerSocket(PORT);
+
                     while (true) {
                         Log.d("user", "Start");
-                        //Toast.makeText(getContext(), "Cicle Start", Toast.LENGTH_SHORT).show();
-                        client = server.accept();
-                        // Toast.makeText(getContext(),"New User Accept", Toast.LENGTH_SHORT).show();
+                        try {
+                            client = server.accept();
+                        } catch (IOException e) {
+                            break;
+                        }
                         ObjectInputStream oin = new ObjectInputStream(client.getInputStream());
                         User user = (User) oin.readObject();
 
                         users.add(user);
                         publishProgress();
                         Log.d("user", "Added");
-                        //Toast.makeText(getContext(), user.getName(), Toast.LENGTH_SHORT).show();
 
                     }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+
                 } catch (ClassNotFoundException e) {
                     Log.d("user", "Error");
                     e.printStackTrace();
+                } catch (OptionalDataException e) {
+                    e.printStackTrace();
+                } catch (StreamCorruptedException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
+                Log.d("user", "OK");
                 return null;
             }
 
