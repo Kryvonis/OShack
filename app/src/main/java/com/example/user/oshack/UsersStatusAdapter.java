@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by dnt on 10/11/15.
+ * Created by Kryvonis on 10/11/15.
  */
 public class UsersStatusAdapter extends ArrayAdapter<User> {
 

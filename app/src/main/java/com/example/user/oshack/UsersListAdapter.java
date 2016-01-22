@@ -12,7 +12,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 /**
- * Created by dnt on 10/10/15.
+ * Created by Kryvonis on 10/10/15.
  */
 public class UsersListAdapter extends ArrayAdapter<User> {
 

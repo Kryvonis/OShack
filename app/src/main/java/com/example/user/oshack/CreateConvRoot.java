@@ -29,8 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by user on 10/10/15.
+ * Created by Kryvonis on 10/10/15.
  */
+
 public class CreateConvRoot extends Activity {
     static final int PORT = 7777;
     static final String HOSTIP = "192.168.1.1";

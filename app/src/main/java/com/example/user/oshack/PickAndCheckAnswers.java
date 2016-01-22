@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.zip.Inflater;
 
 /**
- * Created by dnt on 10/10/15.
+ * Created by Kryvonis on 10/10/15.
  */
 public class PickAndCheckAnswers extends Activity {
 

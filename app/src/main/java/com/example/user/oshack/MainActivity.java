@@ -23,6 +23,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+
 public class MainActivity extends Activity {
 
     private EditText nameField;

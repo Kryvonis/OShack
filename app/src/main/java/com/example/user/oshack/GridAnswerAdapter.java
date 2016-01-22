@@ -10,8 +10,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by dnt on 10/11/15.
+ * Created by Kryvonis on 10/11/15.
  */
+
 public class GridAnswerAdapter extends ArrayAdapter<String> {
 
     private Context context;

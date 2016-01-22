@@ -3,6 +3,7 @@ package com.example.user.oshack;
 import java.io.Serializable;
 import java.net.InetAddress;
 
+
 public class User implements Serializable {
     private  int id = 0;
 
